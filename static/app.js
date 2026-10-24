@@ -15,6 +15,25 @@ const responseBox = document.getElementById("response-box");
 const responseText = document.getElementById("response-text");
 const responseModelTag = document.getElementById("response-model-tag");
 
+// Char count listener
+const charCount = document.getElementById("char-count");
+if (charCount && promptInput) {
+  promptInput.addEventListener("input", (e) => {
+    const len = e.target.value.length;
+    const tokens = Math.ceil(len / 4);
+    charCount.textContent = `${len} chars (~${tokens} tokens)`;
+  });
+}
+
+function copyResponse() {
+  if (!responseText) return;
+  navigator.clipboard.writeText(responseText.textContent).then(() => {
+    alert("Response copied to clipboard!");
+  }).catch(() => {
+    console.log("Clipboard write failed");
+  });
+}
+
 qualitySlider.addEventListener("input", (e) => {
   const val = parseFloat(e.target.value).toFixed(2);
   qualityBarVal.textContent = `${val} (${Math.round(val * 100)}%)`;
@@ -24,6 +43,9 @@ function setPrompt(name, text, threshold) {
   promptInput.value = text;
   qualitySlider.value = threshold;
   qualityBarVal.textContent = `${threshold.toFixed(2)} (${Math.round(threshold * 100)}%)`;
+  if (charCount) {
+    charCount.textContent = `${text.length} chars (~${Math.ceil(text.length / 4)} tokens)`;
+  }
 }
 
 // Fetch stats on load

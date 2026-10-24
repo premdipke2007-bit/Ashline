@@ -1,267 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CostRouter - Eval-Driven Open LLM Gateway</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#080B11',
+            surface: '#0E131F',
+            surfaceBorder: 'rgba(255, 255, 255, 0.08)',
+            cyanGlow: '#00F2FE',
+            emeraldGlow: '#10B981',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #080B11;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.10) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    .glass-card {
+      background: rgba(14, 19, 31, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(6, 182, 212, 0.35);
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.15);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 20px -3px rgba(6, 182, 212, 0.4);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.4);
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+<body class="text-slate-100 min-h-screen font-sans antialiased selection:bg-cyan-500 selection:text-black">
 
-  <!-- Top Navbar -->
-  <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-xl shadow-lg shadow-cyan-500/20 font-black">
-          ⚡
+  <!-- Top Navigation Bar -->
+  <header class="glass-card sticky top-0 z-50 border-b border-surfaceBorder">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3">
+      
+      <!-- Brand & Status -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-lg text-white font-black shadow-lg shadow-cyan-500/25">
+          <i class="fa-solid fa-bolt-lightning"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl font-black tracking-tight text-white">CostRouter</h1>
-            <span class="text-[10px] font-mono uppercase bg-cyan-950 text-cyan-400 border border-cyan-800 px-2 py-0.5 rounded-full font-bold">
-              Eval-Driven Gateway
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-lg font-extrabold tracking-tight text-white">CostRouter</h1>
+            <span class="text-[10px] font-mono uppercase bg-cyan-950/80 text-cyan-300 border border-cyan-800/80 px-2 py-0.5 rounded-full font-bold">
+              v0.1.0 • Gateway
             </span>
+            <div class="flex items-center gap-1.5 ml-1 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/60 text-[10px] font-medium text-emerald-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Live • 118ms
+            </div>
           </div>
-          <p class="text-xs text-slate-400">Routes to the cheapest open-weight model that satisfies your custom quality bar</p>
+          <p class="text-xs text-slate-400">Routes to the cheapest open model passing your quality bar</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <a href="https://github.com/premdipke2007-bit/Ashline" target="_blank" class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+      <!-- Action Badges -->
+      <div class="flex items-center gap-2.5">
+        <a href="https://github.com/premdipke2007-bit/Ashline" target="_blank" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-surfaceBorder transition flex items-center gap-2">
           <i class="fa-brands fa-github text-sm"></i> GitHub Repo
         </a>
-        <span class="text-xs font-semibold px-3 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800">
-          <i class="fa-solid fa-trophy mr-1 text-emerald-400"></i> Track: Best Open-Source AI
+        <span class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-950/70 text-emerald-300 border border-emerald-800/80 flex items-center gap-1.5">
+          <i class="fa-solid fa-trophy text-emerald-400"></i> Best Open-Source AI
         </span>
-        <span class="text-xs font-semibold px-3 py-1 rounded-lg bg-indigo-950 text-indigo-300 border border-indigo-800">
-          <i class="fa-brands fa-google mr-1 text-indigo-400"></i> Gemma Powered
+        <span class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-indigo-950/70 text-indigo-300 border border-indigo-800/80 flex items-center gap-1.5">
+          <i class="fa-brands fa-google text-indigo-400"></i> Gemma 2
         </span>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
-    <!-- KPI Metric Cards -->
+    <!-- Telemetry Metric Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl shadow-sm">
-        <p class="text-xs text-slate-400 font-medium">Total Cost Saved</p>
-        <p id="kpi-saved-dollars" class="text-2xl font-black text-emerald-400 mt-1">$0.0000</p>
-        <p class="text-[11px] text-slate-400 mt-1">vs blind GPT-4o / Gemini Pro routing</p>
+      <div class="glass-card glass-card-hover p-4 rounded-2xl transition duration-300">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-medium mb-1">
+          <span>Net Cost Saved</span>
+          <i class="fa-solid fa-piggy-bank text-emerald-400"></i>
+        </div>
+        <p id="kpi-saved-dollars" class="text-2xl font-black text-emerald-400 font-mono">$0.0000</p>
+        <p class="text-[11px] text-emerald-500/80 mt-1 font-medium">vs blind GPT-4o routing</p>
       </div>
 
-      <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl shadow-sm">
-        <p class="text-xs text-slate-400 font-medium">Average Cost Reduction</p>
-        <p id="kpi-saved-pct" class="text-2xl font-black text-cyan-400 mt-1">0.0%</p>
-        <p class="text-[11px] text-slate-400 mt-1">across all queries</p>
+      <div class="glass-card glass-card-hover p-4 rounded-2xl transition duration-300">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-medium mb-1">
+          <span>Average Cost Reduction</span>
+          <i class="fa-solid fa-chart-line text-cyan-400"></i>
+        </div>
+        <p id="kpi-saved-pct" class="text-2xl font-black text-cyan-300 font-mono">0.0%</p>
+        <p class="text-[11px] text-slate-400 mt-1">across all production tasks</p>
       </div>
 
-      <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl shadow-sm">
-        <p class="text-xs text-slate-400 font-medium">Total Requests</p>
-        <p id="kpi-total-reqs" class="text-2xl font-black text-white mt-1">0</p>
+      <div class="glass-card glass-card-hover p-4 rounded-2xl transition duration-300">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-medium mb-1">
+          <span>Total Requests</span>
+          <i class="fa-solid fa-microchip text-indigo-400"></i>
+        </div>
+        <p id="kpi-total-reqs" class="text-2xl font-black text-white font-mono">0</p>
         <p id="kpi-open-ratio" class="text-[11px] text-indigo-300 mt-1">0% open-weight models</p>
       </div>
 
-      <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl shadow-sm">
-        <p class="text-xs text-slate-400 font-medium">Speculative Fallbacks</p>
-        <p id="kpi-fallbacks" class="text-2xl font-black text-amber-400 mt-1">0</p>
-        <p class="text-[11px] text-slate-400 mt-1">auto-escalated when quality failed</p>
+      <div class="glass-card glass-card-hover p-4 rounded-2xl transition duration-300">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-medium mb-1">
+          <span>Quality Fallbacks</span>
+          <i class="fa-solid fa-shield-halved text-amber-400"></i>
+        </div>
+        <p id="kpi-fallbacks" class="text-2xl font-black text-amber-400 font-mono">0</p>
+        <p class="text-[11px] text-slate-400 mt-1">auto-escalated safely</p>
       </div>
     </div>
 
-    <!-- Main Workspace: Left = Playground, Right = Live Cascade Trace & Benchmark -->
+    <!-- Main Studio Workspace -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- Left Column: Prompt Input & Quality Bar Controls (5 cols) -->
+      <!-- Left Column: Interactive Routing Studio (5 Cols) -->
       <div class="lg:col-span-5 space-y-4">
-        <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="glass-card p-5 rounded-3xl border border-surfaceBorder space-y-4 shadow-xl">
           <div class="flex justify-between items-center">
-            <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-              <i class="fa-solid fa-paper-plane text-cyan-400"></i> Live Prompt Gateway
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-cyan-400"></i> Request Studio
             </h2>
-            <button onclick="runBenchmark()" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition flex items-center gap-1 bg-cyan-950/80 border border-cyan-800 px-2.5 py-1 rounded-lg">
-              <i class="fa-solid fa-play text-[10px]"></i> Run 5-Test Benchmark
+            <button onclick="runBenchmark()" class="text-xs font-bold text-cyan-300 hover:text-white transition flex items-center gap-1.5 bg-cyan-950/80 border border-cyan-700/80 px-3 py-1 rounded-xl shadow-sm hover:border-cyan-400">
+              <i class="fa-solid fa-play text-[10px]"></i> Run 5-Case Benchmark
             </button>
           </div>
 
-          <!-- Quick presets -->
+          <!-- Quick Templates -->
           <div>
             <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Preset Test Prompts:</p>
             <div class="flex flex-wrap gap-1.5">
-              <button onclick="setPrompt('Simple Chat', 'Explain the difference between open-source models and closed APIs in 2 short sentences.', 0.70)" class="text-[11px] px-2.5 py-1 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition">
-                💬 Simple Chat
+              <button onclick="setPrompt('Simple Chat', 'Explain the difference between open-source models and closed APIs in 2 short sentences.', 0.70)" class="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-surfaceBorder transition font-medium">
+                💬 Simple Chat (70%)
               </button>
-              <button onclick="setPrompt('JSON Extraction', 'Extract the contact details into valid JSON with fields name, email: Priya Sharma, priya@iitp.ac.in', 0.80)" class="text-[11px] px-2.5 py-1 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition">
-                📊 Strict JSON
+              <button onclick="setPrompt('JSON Extraction', 'Extract the contact details into valid JSON with fields name, email: Priya Sharma, priya@iitp.ac.in', 0.80)" class="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-surfaceBorder transition font-medium">
+                📊 Strict JSON (80%)
               </button>
-              <button onclick="setPrompt('Code Generation', 'Write a clean Python function with type hints to check if a string is a palindrome.', 0.85)" class="text-[11px] px-2.5 py-1 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition">
-                💻 Python Code
+              <button onclick="setPrompt('Code Generation', 'Write a clean Python function with type hints to check if a string is a palindrome.', 0.85)" class="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-surfaceBorder transition font-medium">
+                💻 Python Code (85%)
               </button>
-              <button onclick="setPrompt('Complex Strategy', 'Analyze the mathematical trade-off between speculative cascade decoding latency overhead vs token cost optimization.', 0.95)" class="text-[11px] px-2.5 py-1 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition">
-                🧠 Heavy Reasoning
+              <button onclick="setPrompt('Complex Strategy', 'Analyze the mathematical trade-off between speculative cascade decoding latency overhead vs token cost optimization.', 0.95)" class="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-surfaceBorder transition font-medium">
+                🧠 Reasoning (95%)
               </button>
             </div>
           </div>
 
-          <!-- Prompt Textarea -->
+          <!-- Prompt Box -->
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Your Prompt:</label>
-            <textarea id="prompt-input" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono transition" placeholder="Enter any user prompt here..."></textarea>
+            <div class="flex justify-between items-center text-xs font-semibold text-slate-300 mb-1.5">
+              <label>Your Prompt:</label>
+              <span id="char-count" class="text-[10px] text-slate-500 font-mono">0 chars</span>
+            </div>
+            <textarea id="prompt-input" rows="4" class="w-full bg-black/40 border border-surfaceBorder rounded-2xl p-3.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono transition leading-relaxed resize-none" placeholder="Type prompt here..."></textarea>
           </div>
 
           <!-- Quality Bar Slider -->
-          <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
-            <div class="flex justify-between items-center mb-1">
+          <div class="bg-black/40 p-4 rounded-2xl border border-surfaceBorder space-y-2">
+            <div class="flex justify-between items-center">
               <label class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                 <i class="fa-solid fa-sliders text-cyan-400"></i> Quality Bar Threshold:
               </label>
-              <span id="quality-bar-val" class="text-xs font-mono font-extrabold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">0.80 (80%)</span>
+              <span id="quality-bar-val" class="text-xs font-mono font-extrabold px-2.5 py-0.5 rounded-lg bg-cyan-950 text-cyan-300 border border-cyan-800">0.80 (80%)</span>
             </div>
             <input type="range" id="quality-slider" min="0.50" max="0.95" step="0.05" value="0.80" class="w-full accent-cyan-500 cursor-pointer">
-            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
-              <span>0.50 (Permissive / Cheapest)</span>
-              <span>0.80 (Balanced)</span>
-              <span>0.95 (Strict / Cloud Fallback)</span>
+            <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+              <span>0.50 (Permissive)</span>
+              <span class="text-cyan-400 font-semibold">0.80 (Balanced)</span>
+              <span>0.95 (Strict SLA)</span>
             </div>
           </div>
 
           <!-- Submit Button -->
-          <button id="send-btn" onclick="sendPrompt()" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-600/20 transition flex items-center justify-center gap-2">
+          <button id="send-btn" onclick="sendPrompt()" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-sm rounded-2xl shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-bolt"></i>
             <span id="send-btn-text">Route Request Through CostRouter</span>
           </button>
         </div>
 
         <!-- Model Tier Pricing Reference -->
-        <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-4 text-xs space-y-2">
-          <p class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Model Cascade Tiers:</p>
+        <div class="glass-card rounded-3xl p-4 text-xs space-y-2 border border-surfaceBorder">
+          <p class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Model Cascade Architecture:</p>
           <div class="space-y-1.5 font-mono text-[11px]">
-            <div class="flex justify-between items-center p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span class="text-emerald-400 font-bold">Tier 0: Gemma-2-2B (Edge)</span>
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-black/40 border border-white/5">
+              <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-leaf text-xs mr-1"></i> Tier 0: Gemma-2-2B (Edge)</span>
               <span class="text-slate-400">$0.07 / 1M ($0.00007 / 1k)</span>
             </div>
-            <div class="flex justify-between items-center p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span class="text-cyan-400 font-bold">Tier 1: Gemma-2-9B (Workhorse)</span>
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-black/40 border border-white/5">
+              <span class="text-cyan-400 font-semibold"><i class="fa-solid fa-gear text-xs mr-1"></i> Tier 1: Gemma-2-9B (Workhorse)</span>
               <span class="text-slate-400">$0.20 / 1M ($0.0002 / 1k)</span>
             </div>
-            <div class="flex justify-between items-center p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span class="text-rose-400 font-bold">Tier 2: Gemini 1.5 Pro (Heavy)</span>
-              <span class="text-slate-400">$3.50 / 1M ($0.0035 / 1k) [50x]</span>
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-black/40 border border-white/5">
+              <span class="text-rose-400 font-semibold"><i class="fa-solid fa-cloud text-xs mr-1"></i> Tier 2: Gemini 1.5 Pro (Heavy)</span>
+              <span class="text-slate-400">$3.50 / 1M (50x cost)</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Real-time Execution Cascade Trace & Results (7 cols) -->
+      <!-- Right Column: Real-Time Execution Trace & Waterfall (7 Cols) -->
       <div class="lg:col-span-7 space-y-4">
         
         <!-- Execution Trace Card -->
-        <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="glass-card p-5 rounded-3xl border border-surfaceBorder shadow-xl space-y-4">
           <div class="flex justify-between items-center">
-            <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-              <i class="fa-solid fa-diagram-project text-indigo-400"></i> Execution Trace &amp; Quality Gate
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-diagram-project text-indigo-400"></i> Execution Waterfall &amp; Quality Gate
             </h2>
-            <span id="trace-status" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">
+            <span id="trace-status" class="text-[11px] font-mono px-2.5 py-1 rounded-xl bg-black/40 text-slate-400 border border-surfaceBorder">
               Awaiting request...
             </span>
           </div>
 
           <!-- Trace Timeline Container -->
-          <div id="trace-container" class="space-y-2">
-            <div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-700 rounded-xl">
-              <i class="fa-solid fa-magnifying-glass text-2xl mb-2 text-slate-600 block"></i>
-              Submit a prompt on the left to watch CostRouter evaluate models and verify quality in real time.
+          <div id="trace-container" class="space-y-2.5">
+            <div class="p-8 text-center text-slate-500 text-xs border border-dashed border-white/10 rounded-2xl">
+              <i class="fa-solid fa-network-wired text-3xl mb-2 text-slate-600 block"></i>
+              Select a test prompt on the left to watch CostRouter evaluate models and verify quality in real time.
             </div>
           </div>
 
           <!-- Financial Breakdown Card -->
-          <div id="finance-box" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs space-y-2">
+          <div id="finance-box" class="hidden bg-black/50 p-4 rounded-2xl border border-white/10 font-mono text-xs space-y-2">
             <div class="flex justify-between items-center text-slate-300">
-              <span>Actual Cost (Routed Model):</span>
+              <span>Actual Cost (CostRouter):</span>
               <span id="actual-cost-val" class="font-bold text-emerald-400">$0.000000</span>
             </div>
             <div class="flex justify-between items-center text-slate-400">
-              <span>Baseline Cost (Blind Heavy Tier):</span>
+              <span>Baseline Cost (Blind Commercial Tier):</span>
               <span id="baseline-cost-val" class="line-through text-rose-400">$0.000000</span>
             </div>
-            <div class="border-t border-slate-800 pt-2 flex justify-between items-center font-bold">
-              <span class="text-cyan-400">Direct Savings:</span>
+            <div class="border-t border-white/10 pt-2 flex justify-between items-center font-bold">
+              <span class="text-cyan-400">Net Dollar Savings:</span>
               <span id="savings-val" class="text-emerald-300 text-sm">$0.000000 (0.0% saved)</span>
             </div>
           </div>
 
-          <!-- Output Response Box -->
+          <!-- Verified Response Box -->
           <div id="response-box" class="hidden space-y-2">
-            <label class="block text-xs font-semibold text-slate-300 flex justify-between items-center">
-              <span>Verified Response:</span>
-              <span id="response-model-tag" class="text-[10px] font-mono text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded border border-indigo-800">Model</span>
-            </label>
-            <div id="response-text" class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-200 font-mono whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto"></div>
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-semibold text-slate-300">Verified Output Response:</label>
+              <div class="flex items-center gap-2">
+                <span id="response-model-tag" class="text-[10px] font-mono text-indigo-400 bg-indigo-950/80 px-2.5 py-0.5 rounded-lg border border-indigo-800">Model</span>
+                <button onclick="copyResponse()" class="text-[11px] px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+                  <i class="fa-solid fa-copy mr-1"></i> Copy
+                </button>
+              </div>
+            </div>
+            <div id="response-text" class="bg-black/60 p-4 rounded-2xl border border-white/10 text-xs text-slate-200 font-mono whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto"></div>
           </div>
         </div>
 
-        <!-- Benchmark Results Panel (Hidden until triggered) -->
-        <div id="benchmark-panel" class="hidden bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-sm space-y-3">
-          <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-            <i class="fa-solid fa-chart-simple text-emerald-400"></i> Automated Benchmark Results
-          </h3>
+        <!-- Benchmark Results Panel -->
+        <div id="benchmark-panel" class="hidden glass-card p-5 rounded-3xl border border-surfaceBorder space-y-3 shadow-xl">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-simple text-emerald-400"></i> Automated Benchmark Evaluation Suite
+            </h3>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">5 Tests Completed</span>
+          </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs font-mono">
               <thead>
-                <tr class="border-b border-slate-700 text-slate-400">
-                  <th class="py-2">Test Case</th>
-                  <th class="py-2">Routed Model</th>
-                  <th class="py-2">Cost Saved</th>
+                <tr class="border-b border-surfaceBorder text-slate-400 bg-black/40">
+                  <th class="p-2.5">Test Case</th>
+                  <th class="p-2.5">Routed Model</th>
+                  <th class="p-2.5 text-right">Cost Reduction</th>
                 </tr>
               </thead>
-              <tbody id="benchmark-table-body" class="divide-y divide-slate-800"></tbody>
+              <tbody id="benchmark-table-body" class="divide-y divide-white/5"></tbody>
             </table>
           </div>
         </div>
 
       </div>
 
+    </div>
+
     <!-- Comparison Section: CostRouter vs LiteLLM / OpenRouter -->
-    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-sm space-y-4">
+    <div class="glass-card rounded-3xl p-6 border border-surfaceBorder space-y-4">
       <div>
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-scale-balanced text-cyan-400"></i> Why CostRouter vs. LiteLLM &amp; OpenRouter
         </h3>
-        <p class="text-xs text-slate-400 mt-1">Existing gateways route blindly. CostRouter provides real-time quality verification before returning responses.</p>
+        <p class="text-xs text-slate-400 mt-0.5">Existing gateways route blindly based on error codes. CostRouter verifies content quality before acceptance.</p>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs font-mono">
           <thead>
-            <tr class="border-b border-slate-700 text-slate-400 bg-slate-900/50">
+            <tr class="border-b border-surfaceBorder text-slate-400 bg-black/40">
               <th class="p-3">Feature</th>
               <th class="p-3 text-slate-400">LiteLLM / OpenRouter</th>
-              <th class="p-3 text-cyan-400 font-bold">CostRouter (Our Gateway)</th>
+              <th class="p-3 text-cyan-400 font-bold">CostRouter (Our Project)</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-800 text-slate-300">
-            <tr class="hover:bg-slate-800/40">
+          <tbody class="divide-y divide-white/5 text-slate-300">
+            <tr class="hover:bg-white/5 transition">
               <td class="p-3 font-semibold text-white">Routing Mechanism</td>
-              <td class="p-3 text-slate-400">Static pricing or random round-robin</td>
+              <td class="p-3 text-slate-400">Static pricing or round-robin</td>
               <td class="p-3 text-emerald-300 font-bold">Dynamic task-aware quality evaluation</td>
             </tr>
-            <tr class="hover:bg-slate-800/40">
+            <tr class="hover:bg-white/5 transition">
               <td class="p-3 font-semibold text-white">Fallback Trigger</td>
               <td class="p-3 text-slate-400">Only on HTTP 500 network/API crash</td>
               <td class="p-3 text-emerald-300 font-bold">On semantic hallucination or schema failure (&lt; threshold)</td>
             </tr>
-            <tr class="hover:bg-slate-800/40">
+            <tr class="hover:bg-white/5 transition">
               <td class="p-3 font-semibold text-white">Quality Awareness</td>
-              <td class="p-3 text-rose-400">❌ 0% (Blind to hallucinated/poor output)</td>
+              <td class="p-3 text-rose-400 font-bold">❌ 0% (Blind to hallucinated/poor output)</td>
               <td class="p-3 text-emerald-300 font-bold">✓ Sub-15ms real-time quality score</td>
             </tr>
-            <tr class="hover:bg-slate-800/40">
+            <tr class="hover:bg-white/5 transition">
               <td class="p-3 font-semibold text-white">Open-Weight First</td>
               <td class="p-3 text-slate-400">Neutral (usually defaults to OpenAI)</td>
               <td class="p-3 text-emerald-300 font-bold">✓ Prioritizes Google Gemma 2 (2B &amp; 9B)</td>
             </tr>
-            <tr class="hover:bg-slate-800/40">
+            <tr class="hover:bg-white/5 transition">
               <td class="p-3 font-semibold text-white">Enterprise Cost Savings</td>
               <td class="p-3 text-slate-400">Unpredictable (users stick to heavy models)</td>
               <td class="p-3 text-emerald-300 font-bold">85% to 95% guaranteed reduction</td>
