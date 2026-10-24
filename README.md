@@ -10,7 +10,7 @@
 
 ## 🎯 Hackathon Metadata
 * **Event:** Hacktoberfest Hack Day (NST.ADYPU · NSTSDC, Pune)
-* **Track:** **Track 1: Main Track — Best Open-Source AI Project** *(Also eligible for Track 2: Best Use of Gemma)*
+* **Track:** **Track 1: Main Track — Open-Source AI Project** *(Also eligible for Track 2: Best Use of Gemma)*
 * **License:** [MIT Open-Source License](LICENSE)
 
 ---
