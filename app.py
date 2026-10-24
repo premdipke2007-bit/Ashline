@@ -17,34 +17,34 @@ STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
 BENCHMARK_PROMPTS = [
     {
-        "name": "1. Simple Greeting",
-        "prompt": "Hi, summarize your capabilities in one short sentence.",
+        "name": "1. 9:00 AM — Morning Standup Summary",
+        "prompt": "Summarize my 3 yesterday tasks into concise morning standup bullet points: fixed login auth bug, reviewed PR 42, and drafted database migration plan.",
         "expected_tier": "Tier 0 (Gemma 2B)",
         "quality_bar": 0.70
     },
     {
-        "name": "2. Strict JSON Data Extraction",
+        "name": "2. 10:30 AM — Strict JSON Schema Extraction",
         "prompt": "Extract the user data into strict JSON format with keys 'name', 'age': Arjun is 24 years old.",
         "expected_tier": "Tier 0 or 1",
         "quality_bar": 0.80
     },
     {
-        "name": "3. Python Code Generation",
+        "name": "3. 11:30 AM — Unit Test & Python Code",
         "prompt": "Write a clean Python function with type hints to calculate the sum of numbers in a list.",
         "expected_tier": "Tier 1 (Gemma 9B)",
         "quality_bar": 0.85
     },
     {
-        "name": "4. Bullet Point Executive Summary",
-        "prompt": "Provide 3 concise bullet points explaining why open-weight models reduce enterprise cloud dependency.",
-        "expected_tier": "Tier 1 (Gemma 9B)",
-        "quality_bar": 0.80
+        "name": "4. 1:30 PM — System Architecture & Race Condition",
+        "prompt": "Evaluate the trade-offs between speculative cascade decoding vs static prompt routing under high SLA latency budgets and distributed deadlocks.",
+        "expected_tier": "Tier 2 (Claude 3.5 / Gemini Pro)",
+        "quality_bar": 0.95
     },
     {
-        "name": "5. Multi-Step Strategic Synthesis",
-        "prompt": "Evaluate the trade-offs between speculative cascade decoding vs static prompt routing under high SLA latency budgets.",
-        "expected_tier": "Tier 2 (Gemini 1.5 Pro)",
-        "quality_bar": 0.95
+        "name": "5. 5:00 PM — PR Description & Release Notes",
+        "prompt": "Provide 3 concise bullet points explaining why open-weight models reduce enterprise cloud dependency for our team release notes.",
+        "expected_tier": "Tier 1 (Gemma 9B)",
+        "quality_bar": 0.80
     }
 ]
 
