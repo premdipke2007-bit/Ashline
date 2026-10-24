@@ -66,8 +66,8 @@ flowchart TD
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/cost-router.git
-cd cost-router
+git clone https://github.com/premdipke2007-bit/Ashline.git
+cd Ashline
 ```
 
 ### 2. (Optional) Set your Gemini API Key
