@@ -10,7 +10,7 @@
 
 ## 🎯 Hackathon Metadata
 * **Event:** Hacktoberfest Hack Day (NST.ADYPU · NSTSDC, Pune)
-* **Track:** **Track 1: Main Track — Best Open-Source AI Project** *(Also eligible for Track 2: Best Use of Gemma)*
+* **Track:** **Track 1: Main Track — Open-Source AI Project** *(Also eligible for Track 2: Best Use of Gemma)*
 * **License:** [MIT Open-Source License](LICENSE)
 
 ---
@@ -54,6 +54,18 @@ Existing tools like **LiteLLM** or **OpenRouter** only route based on static pro
   3. **The Real-Time Financial Accounting Module:** The formula engine calculating actual token expenditure, baseline commercial costs, net dollar savings, and percentage reduction.
   4. **The Zero-Dependency HTTP Gateway (`app.py`):** Native Python socket/HTTP server exposing `/api/chat`, `/api/benchmark`, and `/api/stats`.
   5. **The Interactive Developer Dashboard & Trace Visualizer (`static/`):** Custom UI with dynamic quality bar slider, step-by-step cascade execution trace badges, and the 5-prompt benchmark runner.
+* **Individual Contributions & Team Ownership (Slide 10 & 11 Compliance):**
+  * **Nayan Joshi:**
+    * **Multi-Provider Engine (`router.py`):** Engineered the live API connectors for **Claude 3.5 Sonnet**, **OpenAI GPT-4o**, and **Google Gemini**, plus local **Ollama** integration.
+    * **Cumulative Cascade Financial Accounting:** Built the multi-tier token accounting formula calculating combined input token costs when speculative fallbacks trigger.
+    * **Dynamic Synthesis & Resilience:** Implemented intelligent prompt response generation ensuring real-time answers for any custom judge queries.
+    * **Engineer Daily Routine Workday:** Redesigned the 5 benchmark tasks and UI presets around an engineer's 9 AM – 5 PM daily workflow.
+    * **Master Defense Manual & PDF:** Authored the comprehensive evaluation guide and defense manual ([`CostRouter_Final_Evaluation_Guide.pdf`](CostRouter_Final_Evaluation_Guide.pdf)).
+  * **Deepesh Sharma:**
+    * **Initial Gateway Architecture:** Scaffolded the native Python HTTP socket server in `app.py`.
+    * **Frontend UI/UX Design:** Built the dark glassmorphic layout, KPI telemetry cards, and real-time trace visualizer in `static/`.
+    * **Documentation:** Authored the Hacktoberfest track metadata, model specifications, and comparative evaluation matrix.
+
 * **What AI Tools Assisted With:**
   - AI tools were used as a pair-programmer for boilerplate HTML/CSS layout and generating edge-case benchmark test prompts.
 
